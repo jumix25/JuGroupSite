@@ -39,7 +39,16 @@ Konto Beta ist jetzt mit Supabase Login verbunden.
     <button class="button primary" type="submit">Einloggen</button>
   </form>
 
-  <button class="button secondary" id="reset-password-button" type="button">Passwort zurücksetzen</button>
+  <h2>Passwort zurücksetzen</h2>
+
+  <form class="portal-form" id="reset-password-form">
+    <label>
+      E-Mail
+      <input id="reset-password-email" name="reset-password-email" type="email" required>
+    </label>
+
+    <button class="button secondary" type="submit">Reset-Link senden</button>
+  </form>
 
   <h2>Registrieren</h2>
 
@@ -148,7 +157,8 @@ const authPanel = document.getElementById("auth-panel");
 const loginForm = document.getElementById("login-form");
 const loginEmail = document.getElementById("login-email");
 const loginPassword = document.getElementById("login-password");
-const resetPasswordButton = document.getElementById("reset-password-button");
+const resetPasswordForm = document.getElementById("reset-password-form");
+const resetPasswordEmail = document.getElementById("reset-password-email");
 const signupForm = document.getElementById("signup-form");
 const signupEmail = document.getElementById("signup-email");
 const signupPassword = document.getElementById("signup-password");
@@ -251,15 +261,11 @@ loginForm.addEventListener("submit", async (event) => {
   }
 });
 
-resetPasswordButton.addEventListener("click", async () => {
+resetPasswordForm.addEventListener("submit", async (event) => {
+  event.preventDefault();
   setMessage("");
 
-  if (!loginEmail.value) {
-    setMessage("Bitte gib oben deine E-Mail ein.");
-    return;
-  }
-
-  const { error } = await supabase.auth.resetPasswordForEmail(loginEmail.value, {
+  const { error } = await supabase.auth.resetPasswordForEmail(resetPasswordEmail.value, {
     redirectTo: "https://jumix25.github.io/JuGroupSite/kundenportal.html"
   });
 
