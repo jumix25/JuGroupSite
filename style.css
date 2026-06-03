@@ -4,7 +4,6 @@
 
 :root {
   --bg: #05060a;
-  --bg-soft: #0b0d14;
   --card: rgba(255, 255, 255, 0.06);
   --card-strong: rgba(255, 255, 255, 0.1);
   --text: #f5f7fb;
@@ -95,7 +94,7 @@ main {
 }
 
 .hero {
-  min-height: 78vh;
+  min-height: 72vh;
   display: grid;
   grid-template-columns: 1.1fr 0.9fr;
   gap: 42px;
@@ -288,8 +287,8 @@ footer {
 }
 
 .reveal {
-  opacity: 0;
-  transform: translateY(18px);
+  opacity: 1 !important;
+  transform: none !important;
   transition: 0.7s ease;
 }
 
