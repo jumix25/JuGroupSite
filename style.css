@@ -286,7 +286,7 @@ pre {
   margin-bottom: 40px;
 }
 
-.portal-auth, .portal-content {
+.portal-auth, .portal-content, .portal-admin {
   max-width: 680px;
   margin: 28px auto;
 }
@@ -306,7 +306,7 @@ pre {
   font-weight: 800;
 }
 
-.portal-form input {
+.portal-form input, .portal-form textarea, .portal-form select {
   width: 100%;
   min-height: 48px;
   border: 1px solid var(--line);
@@ -315,6 +315,12 @@ pre {
   color: var(--text);
   padding: 0 14px;
   font: inherit;
+}
+
+.portal-form textarea {
+  min-height: 120px;
+  padding: 14px;
+  resize: vertical;
 }
 
 .portal-database {
