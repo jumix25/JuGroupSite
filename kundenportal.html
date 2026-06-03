@@ -259,15 +259,19 @@ function renderOrders(orders) {
   orders.forEach((order) => {
     const entry = document.createElement("div");
     const title = document.createElement("strong");
+    const orderText = order.orderText || order.order_text || "Auftrag";
+    const customerNumber = order.customerNumber || order.customer_number || order.kundennummer || "Nicht eingetragen";
+    const status = order.status || "Laufend";
+    const customerEmail = order.customerEmail || order.customer_email || "";
 
     entry.className = "portal-entry";
-    title.textContent = order.orderText;
+    title.textContent = orderText;
     entry.append(title);
-    appendField(entry, "Kundennummer", order.customerNumber);
-    appendField(entry, "Status", order.status);
+    appendField(entry, "Kundennummer", customerNumber);
+    appendField(entry, "Status", status);
 
-    if (activeUserIsAdmin) {
-      appendField(entry, "Kunden-E-Mail", order.customerEmail);
+    if (activeUserIsAdmin && customerEmail) {
+      appendField(entry, "Kunden-E-Mail", customerEmail);
     }
 
     orderList.append(entry);
@@ -396,9 +400,9 @@ adminOrderForm.addEventListener("submit", async (event) => {
 
   try {
     await addDoc(collection(db, "customer_orders"), {
-      customerEmail: adminCustomerEmail.value.toLowerCase(),
-      customerNumber: adminCustomerNumber.value,
-      orderText: adminOrderText.value,
+      customerEmail: adminCustomerEmail.value.trim().toLowerCase(),
+      customerNumber: adminCustomerNumber.value.trim(),
+      orderText: adminOrderText.value.trim(),
       status: adminOrderStatus.value,
       createdAt: serverTimestamp()
     });
