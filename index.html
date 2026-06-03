@@ -1,122 +1,105 @@
+```html
 <!DOCTYPE html>
 <html lang="de">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>JuGroup — Software & Tech</title>
-  <meta name="description" content="JuGroup entwickelt moderne Websites, kleine Tools und einfache Techniklösungen." />
-  <link rel="stylesheet" href="style.css?v=5" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JuGroup</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <header class="navbar">
-    <a class="brand" href="#top">
-      <span class="logo">JG</span>
-      <span>JuGroup</span>
-    </a>
-    <nav>
-      <a href="#services">Leistungen</a>
-      <a href="#projects">Projekte</a>
-      <a href="#contact">Kontakt</a>
-      <a href="impressum.html">Impressum</a>
-    </nav>
-  </header>
 
-  <main id="top">
-    <section class="hero">
-      <div class="hero-copy">
-        <p class="eyebrow">Software · Design · Tech Support</p>
-        <h1>Moderne Techniklösungen von JuGroup.</h1>
-        <p class="hero-text">
-          JuGroup baut Websites, kleine Software-Tools, Designs und einfache Lösungen für Technikprobleme — modern, dunkel und verständlich.
-        </p>
-        <div class="actions">
-          <a class="button primary" href="#contact">Kontakt aufnehmen</a>
-          <a class="button secondary" href="https://jumix25.github.io/JuBrowse/" target="_blank" rel="noopener noreferrer">JuBrowse Website</a>
-        </div>
-      </div>
+<header class="navbar">
+  <a class="brand" href="#">
+    <img src="logo.png" alt="JuGroup Logo" class="logo-image">
+    <span>JuGroup</span>
+  </a>
 
-      <div class="hero-panel">
-        <div class="panel-top"><span></span><span></span><span></span></div>
-        <div class="panel-content">
-          <p class="panel-label">JuGroup Status</p>
-          <h2>Bereit für dein Projekt</h2>
-          <div class="status-list">
-            <p><strong>Software:</strong> auf Anfrage</p>
-            <p><strong>JuBrowse:</strong> live</p>
-            <p><strong>Design:</strong> dark & modern</p>
-          </div>
-        </div>
-      </div>
-    </section>
+  <nav>
+    <a href="#services">Leistungen</a>
+    <a href="#projects">Projekte</a>
+    <a href="#contact">Kontakt</a>
+    <a href="impressum.html">Impressum</a>
+    <a href="datenschutz.html">Datenschutz</a>
+    <a href="agb.html">AGB</a>
+  </nav>
+</header>
 
-    <section id="services" class="section">
-      <div class="section-head">
-        <p class="eyebrow">Was wir machen</p>
-        <h2>Leistungen</h2>
-      </div>
-      <div class="grid">
-        <article class="card">
-          <h3>Software auf Anfrage</h3>
-          <p>Websites, kleine Apps, Tools und Automationen passend zu deiner Idee.</p>
-        </article>
-        <article class="card">
-          <h3>Tech Support</h3>
-          <p>Hilfe bei PC, Apps, Accounts, Einstellungen und einfachen Technikproblemen.</p>
-        </article>
-        <article class="card">
-          <h3>Design & Sticker</h3>
-          <p>Hintergründe, Logos, Sticker-Ideen und moderne kleine Marken-Designs.</p>
-        </article>
-      </div>
-    </section>
+<main>
 
-    <section id="projects" class="section">
-      <div class="section-head">
-        <p class="eyebrow">JuGroup Projekt</p>
-        <h2>JuBrowse</h2>
-      </div>
-      <div class="project-card">
-        <div>
-          <p class="project-label">Browser Website</p>
-          <h3>JuBrowse 5.1</h3>
-          <p>Ein moderner Browser von JuGroup mit Tabs, eigener Startseite und dunklem Design.</p>
-        </div>
-        <a class="button primary" href="https://jumix25.github.io/JuBrowse/" target="_blank" rel="noopener noreferrer">Website öffnen</a>
-      </div>
-    </section>
+<section class="hero">
+  <h1>Willkommen bei JuGroup</h1>
+  <p>
+    Software, Design, Webseiten und Techniklösungen.
+  </p>
 
-    <section id="contact" class="section contact">
-      <p class="eyebrow">Kontakt</p>
-      <h2>Schreib JuGroup</h2>
-      <p>Wähle aus, ob du mit Gmail oder Outlook schreiben möchtest.</p>
-      <button class="button primary" onclick="document.getElementById('emailDialog').showModal()">E-Mail schreiben</button>
-    </section>
-  </main>
+  <a class="button primary"
+     href="https://jumix25.github.io/JuBrowse/"
+     target="_blank">
+     JuBrowse öffnen
+  </a>
+</section>
 
-  <dialog id="emailDialog" class="email-dialog">
-    <div class="dialog-box">
-      <form method="dialog">
-        <button class="dialog-close" aria-label="Schließen">×</button>
-      </form>
-      <p class="eyebrow">E-Mail auswählen</p>
-      <h2>Womit möchtest du schreiben?</h2>
-      <p class="dialog-text">Danach öffnet sich direkt eine neue Nachricht an JuGroup.</p>
-      <div class="email-options">
-        <a class="provider-card" target="_blank" rel="noopener noreferrer" href="https://mail.google.com/mail/?view=cm&fs=1&to=jumix6544@gmail.com&su=JuGroup%20Anfrage&body=Hallo%20JuGroup%2C%0A%0Aich%20habe%20eine%20Anfrage%3A%0A">
-          <span>Gmail</span>
-          <small>Mit Google Mail schreiben</small>
-        </a>
-        <a class="provider-card" target="_blank" rel="noopener noreferrer" href="https://outlook.live.com/mail/0/deeplink/compose?to=jumix6544@gmail.com&subject=JuGroup%20Anfrage&body=Hallo%20JuGroup%2C%0A%0Aich%20habe%20eine%20Anfrage%3A%0A">
-          <span>Outlook</span>
-          <small>Mit Outlook schreiben</small>
-        </a>
-      </div>
-    </div>
-  </dialog>
+<section id="services">
+  <h2>Leistungen</h2>
 
-  <footer>
-    <p>2026 JuGroup. Made by Jumix.</p>
-    <p><a href="impressum.html">Impressum</a> · <a href="datenschutz.html">Datenschutz</a> · <a href="agb.html">AGB</a></p>
-  </footer>
+  <div class="card">
+    <h3>Software</h3>
+    <p>Individuelle Software auf Anfrage.</p>
+  </div>
+
+  <div class="card">
+    <h3>Tech Support</h3>
+    <p>Hilfe bei Technikproblemen.</p>
+  </div>
+
+  <div class="card">
+    <h3>Design</h3>
+    <p>Logos, Hintergründe und Sticker.</p>
+  </div>
+</section>
+
+<section id="projects">
+  <h2>JuBrowse</h2>
+
+  <p>
+    Der Browser von JuGroup.
+  </p>
+
+  <a class="button primary"
+     href="https://jumix25.github.io/JuBrowse/"
+     target="_blank">
+     Zur JuBrowse Website
+  </a>
+</section>
+
+<section id="contact">
+  <h2>Kontakt</h2>
+
+  <a class="button primary"
+     href="https://mail.google.com/mail/?view=cm&fs=1&to=jumix6544@gmail.com"
+     target="_blank">
+     Gmail
+  </a>
+
+  <a class="button secondary"
+     href="https://outlook.live.com/mail/0/deeplink/compose?to=jumix6544@gmail.com"
+     target="_blank">
+     Outlook
+  </a>
+</section>
+
+</main>
+
+<footer>
+  <p>2026 JuGroup. Made by Jumix.</p>
+  <p>
+    <a href="impressum.html">Impressum</a> ·
+    <a href="datenschutz.html">Datenschutz</a> ·
+    <a href="agb.html">AGB</a>
+  </p>
+</footer>
+
 </body>
 </html>
+```
