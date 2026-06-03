@@ -19,7 +19,7 @@
 <h1>Kundenportal</h1>
 
 <p>
-Konto Beta ist jetzt mit Supabase Login verbunden.
+Konto Beta ist jetzt mit Firebase Login verbunden.
 </p>
 
 <div class="portal-auth" id="auth-panel">
@@ -147,11 +147,46 @@ Konto Beta ist jetzt mit Supabase Login verbunden.
 </div>
 
 <script type="module">
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
+import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-analytics.js";
+import {
+  createUserWithEmailAndPassword,
+  getAuth,
+  onAuthStateChanged,
+  sendPasswordResetEmail,
+  signInWithEmailAndPassword,
+  signOut,
+  updatePassword
+} from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
+import {
+  addDoc,
+  collection,
+  getDocs,
+  getFirestore,
+  query,
+  serverTimestamp,
+  where
+} from "https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore.js";
 
-const supabaseUrl = "https://jqorlsdbpcrkrpsnfkwx.supabase.co";
-const supabaseKey = "sb_publishable_NHn5OYlZcFO4MdtN2nslNw_sMp5IVC3";
-const supabase = createClient(supabaseUrl, supabaseKey);
+const firebaseConfig = {
+  apiKey: "AIzaSyCrb99DJuHo5noNQ7AnnUdugjR9YpWEGfU",
+  authDomain: "jugroup-kundenportal.firebaseapp.com",
+  projectId: "jugroup-kundenportal",
+  storageBucket: "jugroup-kundenportal.firebasestorage.app",
+  messagingSenderId: "39867975617",
+  appId: "1:39867975617:web:25069754a41136e59a1140",
+  measurementId: "G-NKRXBTW2LS"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+if (firebaseConfig.measurementId) {
+  getAnalytics(app);
+}
+
+const adminEmails = ["jumix6544@gmail.com"];
 
 const authPanel = document.getElementById("auth-panel");
 const loginForm = document.getElementById("login-form");
@@ -181,7 +216,6 @@ const adminOrderStatus = document.getElementById("admin-order-status");
 const orderList = document.getElementById("order-list");
 let activeUser = null;
 let activeUserIsAdmin = false;
-let passwordRecoveryMode = false;
 
 function setMessage(message) {
   authMessage.textContent = message;
@@ -207,56 +241,58 @@ function renderOrders(orders) {
     const title = document.createElement("strong");
 
     entry.className = "portal-entry";
-    title.textContent = order.order_text;
+    title.textContent = order.orderText;
     entry.append(title);
-    appendField(entry, "Kundennummer", order.customer_number);
+    appendField(entry, "Kundennummer", order.customerNumber);
     appendField(entry, "Status", order.status);
 
     if (activeUserIsAdmin) {
-      appendField(entry, "Kunden-E-Mail", order.customer_email);
+      appendField(entry, "Kunden-E-Mail", order.customerEmail);
     }
 
     orderList.append(entry);
   });
 }
 
-async function checkAdmin() {
-  const { data, error } = await supabase
-    .from("app_admins")
-    .select("email")
-    .maybeSingle();
-
-  activeUserIsAdmin = Boolean(data && !error);
+function checkAdmin() {
+  activeUserIsAdmin = adminEmails.includes(activeUser.email.toLowerCase());
   adminPanel.hidden = !activeUserIsAdmin;
 }
 
 async function loadOrders() {
-  const { data, error } = await supabase
-    .from("customer_orders")
-    .select("id, customer_email, customer_number, order_text, status, created_at")
-    .order("created_at", { ascending: false });
+  try {
+    const ordersQuery = activeUserIsAdmin
+      ? query(collection(db, "customer_orders"))
+      : query(
+          collection(db, "customer_orders"),
+          where("customerEmail", "==", activeUser.email.toLowerCase())
+        );
+    const snapshot = await getDocs(ordersQuery);
+    const orders = snapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data()
+    })).sort((first, second) => {
+      const firstTime = first.createdAt?.toMillis?.() || 0;
+      const secondTime = second.createdAt?.toMillis?.() || 0;
+      return secondTime - firstTime;
+    });
 
-  if (error) {
+    renderOrders(orders);
+  } catch (error) {
     orderList.innerHTML = "";
     const message = document.createElement("p");
     message.textContent = error.message;
     orderList.append(message);
-    return;
   }
-
-  renderOrders(data || []);
 }
 
 loginForm.addEventListener("submit", async (event) => {
   event.preventDefault();
   setMessage("");
 
-  const { error } = await supabase.auth.signInWithPassword({
-    email: loginEmail.value,
-    password: loginPassword.value
-  });
-
-  if (error) {
+  try {
+    await signInWithEmailAndPassword(auth, loginEmail.value, loginPassword.value);
+  } catch (error) {
     setMessage(error.message);
   }
 });
@@ -265,11 +301,11 @@ resetPasswordForm.addEventListener("submit", async (event) => {
   event.preventDefault();
   setMessage("");
 
-  const { error } = await supabase.auth.resetPasswordForEmail(resetPasswordEmail.value, {
-    redirectTo: "https://jumix25.github.io/JuGroupSite/kundenportal.html"
-  });
-
-  if (error) {
+  try {
+    await sendPasswordResetEmail(auth, resetPasswordEmail.value, {
+      url: "https://jumix25.github.io/JuGroupSite/kundenportal.html"
+    });
+  } catch (error) {
     setMessage(error.message);
     return;
   }
@@ -286,25 +322,19 @@ signupForm.addEventListener("submit", async (event) => {
     return;
   }
 
-  const { error } = await supabase.auth.signUp({
-    email: signupEmail.value,
-    password: signupPassword.value,
-    options: {
-      emailRedirectTo: "https://jumix25.github.io/JuGroupSite/kundenportal.html"
-    }
-  });
-
-  if (error) {
+  try {
+    await createUserWithEmailAndPassword(auth, signupEmail.value, signupPassword.value);
+  } catch (error) {
     setMessage(error.message);
     return;
   }
 
   signupForm.reset();
-  setMessage("Registrierung erstellt. Bitte prüfe deine E-Mail.");
+  setMessage("Registrierung erstellt. Du bist jetzt eingeloggt.");
 });
 
 logoutButton.addEventListener("click", async () => {
-  await supabase.auth.signOut();
+  await signOut(auth);
 });
 
 passwordForm.addEventListener("submit", async (event) => {
@@ -316,16 +346,13 @@ passwordForm.addEventListener("submit", async (event) => {
     return;
   }
 
-  const { error } = await supabase.auth.updateUser({
-    password: newPassword.value
-  });
-
-  if (error) {
+  try {
+    await updatePassword(activeUser, newPassword.value);
+  } catch (error) {
     setMessage(error.message);
     return;
   }
 
-  passwordRecoveryMode = false;
   passwordForm.reset();
   passwordPanel.hidden = true;
   setMessage("Passwort wurde gespeichert.");
@@ -334,14 +361,15 @@ passwordForm.addEventListener("submit", async (event) => {
 adminOrderForm.addEventListener("submit", async (event) => {
   event.preventDefault();
 
-  const { error } = await supabase.from("customer_orders").insert({
-    customer_email: adminCustomerEmail.value,
-    customer_number: adminCustomerNumber.value,
-    order_text: adminOrderText.value,
-    status: adminOrderStatus.value
-  });
-
-  if (error) {
+  try {
+    await addDoc(collection(db, "customer_orders"), {
+      customerEmail: adminCustomerEmail.value.toLowerCase(),
+      customerNumber: adminCustomerNumber.value,
+      orderText: adminOrderText.value,
+      status: adminOrderStatus.value,
+      createdAt: serverTimestamp()
+    });
+  } catch (error) {
     setMessage(error.message);
     return;
   }
@@ -350,13 +378,13 @@ adminOrderForm.addEventListener("submit", async (event) => {
   await loadOrders();
 });
 
-async function updatePortal(session) {
-  activeUser = session?.user || null;
+async function updatePortal(user) {
+  activeUser = user || null;
   activeUserIsAdmin = false;
   authPanel.hidden = Boolean(activeUser);
   portalContent.hidden = !activeUser;
   adminPanel.hidden = true;
-  passwordPanel.hidden = !passwordRecoveryMode;
+  passwordPanel.hidden = true;
   orderList.innerHTML = "";
 
   if (!activeUser) {
@@ -364,23 +392,12 @@ async function updatePortal(session) {
   }
 
   userStatus.textContent = `Eingeloggt als ${activeUser.email}`;
-  await checkAdmin();
+  checkAdmin();
   await loadOrders();
 }
 
-if (window.location.hash.includes("type=recovery")) {
-  passwordRecoveryMode = true;
-}
-
-const { data } = await supabase.auth.getSession();
-await updatePortal(data.session);
-
-supabase.auth.onAuthStateChange((_event, session) => {
-  if (_event === "PASSWORD_RECOVERY") {
-    passwordRecoveryMode = true;
-  }
-
-  updatePortal(session);
+onAuthStateChanged(auth, (user) => {
+  updatePortal(user);
 });
 </script>
 
